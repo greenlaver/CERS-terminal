@@ -4,6 +4,7 @@
 #include <HkNfcRw.h>
 #include <HkNfcF.h>
 #include "GpioManager.h"
+#include "DisplayManager.h"
 
 //  Student Info
 #define ID_MAX_LENGTH 11
@@ -22,7 +23,7 @@ public:
     char name[NAME_MAX_LENGTH + 1];
   };
 
-  void NFCInit(GpioManager *gpioManager);
+  void NFCInit(GpioManager *gpioManager, DisplayManager *displayManager);
   void resetNFC();
   bool readCard();
   void printStudentInfo();
@@ -32,6 +33,7 @@ private:
   bool is_detected;
   StudentInfo student_info;
   GpioManager *gpioMan;
+  DisplayManager *displayMan;
   
   bool pollingCard();
   bool readIDFromCard(char *str_id);

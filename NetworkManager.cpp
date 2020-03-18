@@ -1,19 +1,19 @@
 #include "NetworkManager.h"
 
-void NetworkManager::NetworkInit(GpioManager *gpioManager)
+void NetworkManager::NetworkInit(GpioManager *gpioManager, DisplayManager *displayManager)
 {
     gpioMan = gpioManager;
+    displayMan = displayManager;
     EEPROM.begin(sizeof(WIFI_CONFIG));
 
     // Store Dummy Wifi Settings
     storeWifiConfig(WIFI_CONFIG{"SSID", "PASS", "ntp.nict.jp"});
+    // Read Wifi settings from EEPROM
+    loadWifiConfig(&wifi_config);
 }
 
 void NetworkManager::connectWifi()
 {
-    // Read Wifi settings from EEPROM
-    loadWifiConfig(&wifi_config);
-
     // Try to connect Wifi
     uint32_t check_count = 0;
     WiFi.begin(wifi_config.ssid, wifi_config.pass);
@@ -21,6 +21,7 @@ void NetworkManager::connectWifi()
     Serial.print("Connecting to ");
     Serial.print(wifi_config.ssid);
     gpioMan->setLEDColor(GpioManager::Color::GREEN, 500);
+    displayMan->DrawWifiConnection(wifi_config.ssid);
     
     while (WiFi.status() != WL_CONNECTED)
     {

@@ -1,8 +1,9 @@
 #include "NFCReader.h"
 
-void NFCReader::NFCInit(GpioManager *gpioManager)
+void NFCReader::NFCInit(GpioManager *gpioManager, DisplayManager *displayManager)
 {
   gpioMan = gpioManager;
+  displayMan = displayManager;
 
   // Init NFC reader
   if (!HkNfcRw::open())
@@ -66,6 +67,8 @@ void NFCReader::printStudentInfo()
   Serial.println(student_info.id);
   Serial.print("[Info] Student Name : ");
   Serial.println(str_utf8);
+
+  displayMan->DrawCardInfo(student_info.id, str_utf8);
 }
 
 bool NFCReader::getNameAsUTF8(char *str_sjis, char *str_utf8)

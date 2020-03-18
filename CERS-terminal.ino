@@ -2,6 +2,11 @@
 #include "NFCReader.h"
 #include "NetworkManager.h"
 #include "DisplayManager.h"
+#include <U8g2lib.h>
+#include <Wire.h>
+
+// OLED Library
+U8G2_SSD1306_128X32_UNIVISION_1_HW_I2C oled(U8G2_R0, U8X8_PIN_NONE);
 
 /// =======================================
 ///  UART Settings
@@ -25,11 +30,12 @@ void setup()
   Serial2.begin(UART2_BAUD);
 
   gpioMan.GpioInit();
-  nfcReader.NFCInit(&gpioMan);
-  netMan.NetworkInit(&gpioMan);
-  dispMan.DisplayInit();
+  dispMan.DisplayInit(&oled, &gpioMan);
+  nfcReader.NFCInit(&gpioMan, &dispMan);
+  netMan.NetworkInit(&gpioMan, &dispMan);
 
   Serial.println("COVID-19 NFC Program.");
+  dispMan.DrawSplashScreen("0.1.0");
   gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
 
   // Connect to Wifi
@@ -39,6 +45,9 @@ void setup()
 
 void loop()
 {
+  // Display
+  dispMan.DrawWaitCard();
+
   // New Arriving Card Process
   if (nfcReader.readCard())
   {
@@ -49,6 +58,7 @@ void loop()
 
     gpioMan.ringBuzzer(100);
     gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
+    delay(1000);
   }
 
   // Wifi Health Check
@@ -60,10 +70,12 @@ void loop()
 
 void showNTPError() {
   Serial.println("=== NTP FAILED. ===");
+  dispMan.DrawNTPError();
   gpioMan.ringBuzzer(2000);
 }
 
 void showWifiError(){
   Serial.println("=== Wifi Discon. ===");
+  dispMan.DrawWifiError();
   gpioMan.ringBuzzer(2000);
 }
