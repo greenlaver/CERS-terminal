@@ -7,10 +7,9 @@ void NFCReader::NFCInit(GpioManager *gpioManager)
   // Init NFC reader
   if (!HkNfcRw::open())
   {
+    // Show Error
     Serial.println("[Error] NFC Reader Init Failed.");
-    while (true)
-    {
-    }
+    while (true);
   }
   Serial.println("[ OK ] RC-S620S Connected.");
 
@@ -36,7 +35,6 @@ bool NFCReader::readCard()
   // Work only first detection
   if (!is_detected)
   {
-    gpioMan->setLEDColor(GpioManager::Color::GREEN, 100);
     clearStudentInfo();
 
     if (!readIDFromCard(student_info.id))
@@ -50,8 +48,6 @@ bool NFCReader::readCard()
 
     is_detected = true;
 
-    gpioMan->setLEDColor(GpioManager::Color::GREEN, 0);
-    gpioMan->ringBuzzer(100);
     printStudentInfo();
   }
   else {
@@ -66,9 +62,9 @@ void NFCReader::printStudentInfo()
   char str_utf8[NAME_MAX_LENGTH * 3];
   getNameAsUTF8(student_info.name, str_utf8);
 
-  Serial.print("Student ID   : ");
+  Serial.print("[Info] Student ID   : ");
   Serial.println(student_info.id);
-  Serial.print("Student Name : ");
+  Serial.print("[Info] Student Name : ");
   Serial.println(str_utf8);
 }
 

@@ -17,6 +17,8 @@ NFCReader nfcReader;
 NetworkManager netMan;
 DisplayManager dispMan;
 
+char localtime_str[30];
+
 void setup()
 {
   Serial.begin(UART0_BAUD);
@@ -35,21 +37,33 @@ void setup()
   netMan.setupNTP();
 }
 
-char localtime_str[30];
-
 void loop()
 {
+  // New Arriving Card Process
   if (nfcReader.readCard())
   {
+    gpioMan.setLEDColor(GpioManager::Color::GREEN, 50);
+
     // NTP
-    if (netMan.getNTPTime(localtime_str, 30))
-    {
-      Serial.print("Current Time : ");
-      Serial.println(localtime_str);
-    }
-    else
-    {
-      Serial.println("=== NTP FAILED. ===");
-    }
+    if (!netMan.getNTPTime(localtime_str, 30)) showNTPError();
+
+    gpioMan.ringBuzzer(100);
+    gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
   }
+
+  // Wifi Health Check
+  if(WiFi.status() != WL_CONNECTED) {
+    showWifiError();
+    netMan.connectWifi();
+  }
+}
+
+void showNTPError() {
+  Serial.println("=== NTP FAILED. ===");
+  gpioMan.ringBuzzer(2000);
+}
+
+void showWifiError(){
+  Serial.println("=== Wifi Discon. ===");
+  gpioMan.ringBuzzer(2000);
 }

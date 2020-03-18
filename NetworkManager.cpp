@@ -45,10 +45,13 @@ bool NetworkManager::getNTPTime(char *str_dt, uint8_t str_c)
 {
     struct tm timeinfo;
     if (!getLocalTime(&timeinfo)) return false;
-    
+
     strftime(str_dt, str_c,
         "%Y-%m-%dT%H:%M:%S+09:00", &timeinfo);
     
+    Serial.print("[Info] Current Time : ");
+    Serial.println(str_dt);
+
     return true;
 }
 

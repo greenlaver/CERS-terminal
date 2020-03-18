@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
+#include <Ticker.h>
 
 /// =======================================
 ///  GPIO Settings
@@ -10,6 +11,8 @@
 #define LED_GRN 27  // Green LED
 #define LED_RED 26  // Red LED
 #define BUZ_PIN 32  // Buzzer
+
+void blinkLED(uint8_t color);
 
 class GpioManager
 {
@@ -22,12 +25,13 @@ class GpioManager
     };
 
     void GpioInit();
-    void setLEDColor(Color color, uint16_t int_time);
+    void setLEDColor(Color color, uint32_t pace_ms);
     bool isInMode();
     bool isConfMode();
     void buzzerOn();
     void buzzerOff();
-    void ringBuzzer(uint8_t bz_time);
+    void ringBuzzer(uint32_t bz_time);
   private:
     Color current_color;
+    Ticker ledBlinker;
 };
