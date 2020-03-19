@@ -10,7 +10,8 @@ void NFCReader::NFCInit(GpioManager *gpioManager, DisplayManager *displayManager
   {
     // Show Error
     Serial.println("[Error] NFC Reader Init Failed.");
-    while (true);
+    while (true)
+      ;
   }
   Serial.println("[ OK ] RC-S620S Connected.");
 
@@ -51,7 +52,8 @@ bool NFCReader::readCard()
 
     printStudentInfo();
   }
-  else {
+  else
+  {
     return false;
   }
 
@@ -60,45 +62,16 @@ bool NFCReader::readCard()
 
 void NFCReader::printStudentInfo()
 {
-  char str_utf8[NAME_MAX_LENGTH * 3];
-  getNameAsUTF8(student_info.name, str_utf8);
+  char str_sjis[(NAME_MAX_LENGTH * 3) + 1];
+  strcpy(str_sjis, student_info.name);
+  convertSjis2UTF8(NAME_MAX_LENGTH, str_sjis, student_info.name);
 
   Serial.print("[Info] Student ID   : ");
   Serial.println(student_info.id);
   Serial.print("[Info] Student Name : ");
-  Serial.println(str_utf8);
+  Serial.println(student_info.name);
 
-  displayMan->DrawCardInfo(student_info.id, str_utf8);
-}
-
-bool NFCReader::getNameAsUTF8(char *str_sjis, char *str_utf8)
-{
-  for (int i = 0; i < NAME_MAX_LENGTH; i++)
-  {
-    if (str_sjis[i] == 0x00)
-    {
-      *str_utf8 = 0x00;
-      return true;
-    }
-    else if (str_sjis[i] == 0x20)
-    {
-      *str_utf8++ = ' ';
-    }
-    else if (str_sjis[i] < 0xC0)
-    {
-      *str_utf8++ = '\xEF';
-      *str_utf8++ = '\xBD';
-      *str_utf8++ = str_sjis[i];
-    }
-    else
-    {
-      *str_utf8++ = '\xEF';
-      *str_utf8++ = '\xBE';
-      *str_utf8++ = str_sjis[i] - 0x40;
-    }
-  }
-
-  return false;
+  displayMan->DrawCardInfo(student_info.id, student_info.name);
 }
 
 bool NFCReader::pollingCard()

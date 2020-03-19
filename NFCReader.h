@@ -5,6 +5,7 @@
 #include <HkNfcF.h>
 #include "GpioManager.h"
 #include "DisplayManager.h"
+#include "SJIS2UTF8.h"
 
 //  Student Info
 #define ID_MAX_LENGTH 11
@@ -20,21 +21,20 @@ public:
   struct StudentInfo
   {
     char id[ID_MAX_LENGTH + 1];
-    char name[NAME_MAX_LENGTH + 1];
+    char name[(NAME_MAX_LENGTH * 3) + 1];
   };
 
   void NFCInit(GpioManager *gpioManager, DisplayManager *displayManager);
   void resetNFC();
   bool readCard();
   void printStudentInfo();
-  bool getNameAsUTF8(char *str_sjis, char *str_utf8);
 
 private:
   bool is_detected;
   StudentInfo student_info;
   GpioManager *gpioMan;
   DisplayManager *displayMan;
-  
+
   bool pollingCard();
   bool readIDFromCard(char *str_id);
   bool readNameFromCard(char *str_name);

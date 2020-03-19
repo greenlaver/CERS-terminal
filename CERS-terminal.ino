@@ -38,6 +38,12 @@ void setup()
   dispMan.DrawSplashScreen("0.1.0");
   gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
 
+  // Conf Mode Check
+  if (gpioMan.isConfMode())
+  {
+    netMan.enterConfigMode();
+  }
+
   // Connect to Wifi
   netMan.connectWifi();
   netMan.setupNTP();
@@ -45,16 +51,23 @@ void setup()
 
 void loop()
 {
+  // Conf Mode Check
+  if (gpioMan.isConfMode())
+  {
+    netMan.enterConfigMode();
+  }
+
+  // NTP
+  if (!netMan.getNTPTime(localtime_str, 30))
+    showNTPError();
+
   // Display
-  dispMan.DrawWaitCard();
+  dispMan.DrawWaitCard(localtime_str);
 
   // New Arriving Card Process
   if (nfcReader.readCard())
   {
     gpioMan.setLEDColor(GpioManager::Color::GREEN, 50);
-
-    // NTP
-    if (!netMan.getNTPTime(localtime_str, 30)) showNTPError();
 
     gpioMan.ringBuzzer(100);
     gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
@@ -62,19 +75,22 @@ void loop()
   }
 
   // Wifi Health Check
-  if(WiFi.status() != WL_CONNECTED) {
+  if (WiFi.status() != WL_CONNECTED)
+  {
     showWifiError();
     netMan.connectWifi();
   }
 }
 
-void showNTPError() {
+void showNTPError()
+{
   Serial.println("=== NTP FAILED. ===");
   dispMan.DrawNTPError();
   gpioMan.ringBuzzer(2000);
 }
 
-void showWifiError(){
+void showWifiError()
+{
   Serial.println("=== Wifi Discon. ===");
   dispMan.DrawWifiError();
   gpioMan.ringBuzzer(2000);
