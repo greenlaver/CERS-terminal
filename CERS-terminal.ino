@@ -35,7 +35,7 @@ void setup()
   netMan.NetworkInit(&gpioMan, &dispMan);
 
   Serial.println("COVID-19 NFC Program.");
-  dispMan.DrawSplashScreen("0.1.0");
+  dispMan.DrawSplashScreen("1.0.0");
   gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
 
   // Conf Mode Check
@@ -61,18 +61,21 @@ void loop()
   if (!netMan.getNTPTime(localtime_str, 30))
     showNTPError();
 
-  // Display
-  dispMan.DrawWaitCard(localtime_str);
-
   // New Arriving Card Process
   if (nfcReader.readCard())
   {
     gpioMan.setLEDColor(GpioManager::Color::GREEN, 50);
 
-    gpioMan.ringBuzzer(100);
+    netMan.post(gpioMan.isInMode(),
+                nfcReader.student_info,
+                localtime_str);
+
     gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
     delay(1000);
   }
+
+  // Display
+  dispMan.DrawWaitCard(localtime_str);
 
   // Wifi Health Check
   if (WiFi.status() != WL_CONNECTED)

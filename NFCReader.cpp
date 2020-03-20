@@ -38,16 +38,21 @@ bool NFCReader::readCard()
   if (!is_detected)
   {
     clearStudentInfo();
+    char str_sjis[(NAME_MAX_LENGTH * 3) + 1];
 
     if (!readIDFromCard(student_info.id))
     {
       return false;
     }
-    if (!readNameFromCard(student_info.name))
+    if (!readNameFromCard(str_sjis))
     {
       return false;
     }
 
+    // Convert SJIS to UTF8
+    convertSjis2UTF8(NAME_MAX_LENGTH, str_sjis, student_info.name);
+
+    // Detected Flag
     is_detected = true;
 
     printStudentInfo();
@@ -58,20 +63,6 @@ bool NFCReader::readCard()
   }
 
   return true;
-}
-
-void NFCReader::printStudentInfo()
-{
-  char str_sjis[(NAME_MAX_LENGTH * 3) + 1];
-  strcpy(str_sjis, student_info.name);
-  convertSjis2UTF8(NAME_MAX_LENGTH, str_sjis, student_info.name);
-
-  Serial.print("[Info] Student ID   : ");
-  Serial.println(student_info.id);
-  Serial.print("[Info] Student Name : ");
-  Serial.println(student_info.name);
-
-  displayMan->DrawCardInfo(student_info.id, student_info.name);
 }
 
 bool NFCReader::pollingCard()
@@ -126,4 +117,14 @@ void NFCReader::clearStudentInfo()
   {
     student_info.name[i] = 0x00;
   }
+}
+
+void NFCReader::printStudentInfo()
+{
+  // Console log
+  Serial.print("[Info] Student ID   : ");
+  Serial.println(student_info.id);
+  Serial.print("[Info] Student Name : ");
+  Serial.println(student_info.name);
+  displayMan->DrawCardInfo(student_info.id, student_info.name);
 }

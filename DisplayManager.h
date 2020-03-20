@@ -19,6 +19,7 @@ public:
     void DrawSetupMode();
     void DrawWifiError();
     void DrawNTPError();
+    void DrawPOSTError(int code);
 private:
     U8G2_SSD1306_128X32_UNIVISION_1_HW_I2C *u8g2;
     GpioManager *gpioMan;

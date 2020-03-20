@@ -4,9 +4,11 @@
 #include <EEPROM.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <ArduinoJson.h>
 #include "time.h"
 #include "GpioManager.h"
 #include "DisplayManager.h"
+#include "NFCReader.h"
 
 #define SSID_MAX_LEN 32
 #define PASS_MAX_LEN 63
@@ -26,6 +28,7 @@ public:
 
     void NetworkInit(GpioManager *gpioManager, DisplayManager *displayManager);
     void connectWifi();
+    bool post(bool is_in, NFCReader::StudentInfo _info, char *_dt);
     void setupNTP();
     bool getNTPTime(char *str_dt, uint8_t str_c);
     void enterConfigMode();

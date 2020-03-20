@@ -34,6 +34,43 @@ void NetworkManager::connectWifi()
     gpioMan->setLEDColor(GpioManager::Color::GREEN, 0);
 }
 
+bool NetworkManager::post(bool is_in, NFCReader::StudentInfo _info, char *_dt)
+{
+    HTTPClient http;
+    DynamicJsonDocument doc(1024);
+    char buffer[1024];
+
+    // Json Data
+    doc["id"] = _info.id;
+    doc["name"] = _info.name;
+    doc["mode"] = is_in ? "enter" : "leave";
+    doc["acceptedAt"] = _dt;
+    // Json Serialize
+    serializeJson(doc, buffer, sizeof(buffer));
+    Serial.println(buffer);
+
+    // HTTP POST
+    http.begin(wifi_config.apis);
+    http.addHeader("Content-Type", "application/json");
+    int status_code = http.POST((uint8_t *)buffer, strlen(buffer));
+    Serial.print("[info] HTTP Status Code : ");
+    Serial.print(status_code);
+
+    http.end();
+    
+    if (status_code != 201)
+    {
+        displayMan->DrawPOSTError(status_code);
+        gpioMan->ringBuzzer(2000);
+
+        return false;
+    }
+    
+    gpioMan->ringBuzzer(100);
+
+    return true;
+}
+
 void NetworkManager::setupNTP()
 {
     const long gmtOffset_sec = 9 * 3600;

@@ -152,6 +152,37 @@ void DisplayManager::DrawNTPError()
     } while (u8g2->nextPage());
 }
 
+void DisplayManager::DrawPOSTError(int code)
+{
+    char code_str[32];
+    itoa(code, code_str, 10);
+
+    u8g2->setFontDirection(0);
+    u8g2->setFontMode(0);
+    u8g2->firstPage();
+    do
+    {
+        u8g2->setFont(u8g2_font_profont12_mf);
+        u8g2->setDrawColor(0);
+        u8g2->setCursor(38, 9);
+        u8g2->print(" ERROR ");
+
+        u8g2->setFont(u8g2_font_b16_t_japanese3);
+        u8g2->setDrawColor(1);
+        if(code == 400 || code == 409){
+            u8g2->setCursor(0, 31);
+            if(gpioMan->isInMode()) u8g2->print("退室して下さい！");
+            else u8g2->print("入室して下さい！");
+        }
+        else {
+            u8g2->setCursor(0, 31);
+            u8g2->print("不明：");
+            u8g2->setCursor(48, 31);
+            u8g2->print(code_str);
+        }
+    } while (u8g2->nextPage());
+}
+
 void blinkMsg(bool *flag)
 {
     *flag = !*flag;

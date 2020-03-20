@@ -24,14 +24,14 @@ public:
     char name[(NAME_MAX_LENGTH * 3) + 1];
   };
 
+  StudentInfo student_info;
+
   void NFCInit(GpioManager *gpioManager, DisplayManager *displayManager);
   void resetNFC();
   bool readCard();
-  void printStudentInfo();
 
 private:
   bool is_detected;
-  StudentInfo student_info;
   GpioManager *gpioMan;
   DisplayManager *displayMan;
 
@@ -39,4 +39,5 @@ private:
   bool readIDFromCard(char *str_id);
   bool readNameFromCard(char *str_name);
   void clearStudentInfo();
+  void printStudentInfo();
 };
