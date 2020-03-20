@@ -41,7 +41,7 @@ bool GpioManager::isInMode()
 
 bool GpioManager::isConfMode()
 {
-  return digitalRead(SW_CONF);
+  return !digitalRead(SW_CONF);
 }
 
 void GpioManager::buzzerOn()
