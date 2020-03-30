@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:CERS-cache
 EELAYER 29 0
 EELAYER END
 $Descr User 5512 6299
@@ -6,7 +7,7 @@ encoding utf-8
 Sheet 1 1
 Title "Covid-19 Entrance Recording System"
 Date "2020-03-17"
-Rev "1.0"
+Rev "1.1"
 Comp "Yakumi-Kobo"
 Comment1 ""
 Comment2 ""
@@ -223,7 +224,6 @@ NoConn ~ 1700 1400
 NoConn ~ 1700 1300
 NoConn ~ 2900 2300
 NoConn ~ 2900 2500
-NoConn ~ 2900 2600
 Wire Wire Line
 	3400 3850 3400 3100
 Wire Wire Line
@@ -245,46 +245,20 @@ NoConn ~ 2900 3000
 NoConn ~ 2900 3100
 NoConn ~ 2900 3200
 $Comp
-L Device:LED D1
-U 1 1 5E7380DE
-P 4100 3350
-F 0 "D1" V 4139 3232 50  0000 R CNN
-F 1 "STAT" V 4048 3232 50  0000 R CNN
-F 2 "LED_THT:LED_D2.0mm_W4.8mm_H2.5mm_FlatTop" H 4100 3350 50  0001 C CNN
-F 3 "~" H 4100 3350 50  0001 C CNN
-	1    4100 3350
-	0    -1   -1   0   
-$EndComp
-$Comp
 L Device:R R1
 U 1 1 5E73B0CD
-P 4100 2950
-F 0 "R1" H 4170 2996 50  0000 L CNN
-F 1 "1k" H 4170 2905 50  0000 L CNN
-F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4030 2950 50  0001 C CNN
-F 3 "~" H 4100 2950 50  0001 C CNN
-	1    4100 2950
+P 4150 2900
+F 0 "R1" H 4220 2946 50  0000 L CNN
+F 1 "1k" H 4220 2855 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4080 2900 50  0001 C CNN
+F 3 "~" H 4150 2900 50  0001 C CNN
+	1    4150 2900
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	2900 2700 4100 2700
+	2900 2700 4150 2700
 Wire Wire Line
-	4100 2700 4100 2800
-Wire Wire Line
-	4100 3200 4100 3100
-$Comp
-L power:GND #PWR09
-U 1 1 5E73DC48
-P 4100 3850
-F 0 "#PWR09" H 4100 3600 50  0001 C CNN
-F 1 "GND" H 4105 3677 50  0000 C CNN
-F 2 "" H 4100 3850 50  0001 C CNN
-F 3 "" H 4100 3850 50  0001 C CNN
-	1    4100 3850
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4100 3850 4100 3500
+	4150 2700 4150 2750
 Wire Wire Line
 	2900 1000 3200 1000
 $Comp
@@ -445,4 +419,55 @@ Wire Wire Line
 Wire Wire Line
 	750  1550 750  2100
 Connection ~ 750  2100
+$Comp
+L Device:LED_Dual_ACA D1
+U 1 1 5E8047BE
+P 4300 3450
+F 0 "D1" V 4346 3240 50  0000 R CNN
+F 1 "GL8ED48" V 4255 3240 50  0000 R CNN
+F 2 "LED_THT:LED_D3.0mm-3" H 4300 3450 50  0001 C CNN
+F 3 "~" H 4300 3450 50  0001 C CNN
+	1    4300 3450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R R2
+U 1 1 5E80CC2A
+P 4450 2900
+F 0 "R2" H 4520 2946 50  0000 L CNN
+F 1 "1k" H 4520 2855 50  0000 L CNN
+F 2 "Resistor_THT:R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal" V 4380 2900 50  0001 C CNN
+F 3 "~" H 4450 2900 50  0001 C CNN
+	1    4450 2900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2900 2600 4450 2600
+Wire Wire Line
+	4450 2600 4450 2750
+Wire Wire Line
+	4150 3050 4150 3100
+Wire Wire Line
+	4150 3100 4200 3100
+Wire Wire Line
+	4200 3100 4200 3150
+Wire Wire Line
+	4450 3050 4450 3100
+Wire Wire Line
+	4450 3100 4400 3100
+Wire Wire Line
+	4400 3100 4400 3150
+$Comp
+L power:GND #PWR09
+U 1 1 5E812BB7
+P 4300 3850
+F 0 "#PWR09" H 4300 3600 50  0001 C CNN
+F 1 "GND" H 4305 3677 50  0000 C CNN
+F 2 "" H 4300 3850 50  0001 C CNN
+F 3 "" H 4300 3850 50  0001 C CNN
+	1    4300 3850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4300 3850 4300 3750
 $EndSCHEMATC
