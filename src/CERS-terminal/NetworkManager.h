@@ -3,7 +3,7 @@
 #include <Arduino.h>
 #include <EEPROM.h>
 #include <WiFi.h>
-#include <HTTPClient.h>
+#include <WiFiClientSecure.h>
 #include <ArduinoJson.h>
 #include "time.h"
 #include "GpioManager.h"
@@ -40,5 +40,6 @@ private:
 
     void loadWifiConfig(WIFI_CONFIG *buf);
     void storeWifiConfig(WIFI_CONFIG buf);
+    int GASSLLPost(String body);
     void readUARTnoTimeout(char *buf, int max_length, bool repeat);
 };

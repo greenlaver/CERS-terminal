@@ -35,7 +35,7 @@ void setup()
   netMan.NetworkInit(&gpioMan, &dispMan);
 
   Serial.println("COVID-19 NFC Program.");
-  dispMan.DrawSplashScreen("1.0.0");
+  dispMan.DrawSplashScreen("3.0-a");
   gpioMan.setLEDColor(GpioManager::Color::GREEN, 0);
 
   // Conf Mode Check

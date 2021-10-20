@@ -20,7 +20,7 @@ void DisplayManager::DrawSplashScreen(const char *version)
     {
         u8g2->setFont(u8g2_font_luBIS08_tf);
         u8g2->setCursor(10, 8);
-        u8g2->print("Covid-19 Entrance");
+        u8g2->print("MxD Entrance");
         u8g2->setCursor(10, 18);
         u8g2->print("Recording System");
 
