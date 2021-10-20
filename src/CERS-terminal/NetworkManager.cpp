@@ -36,6 +36,7 @@ void NetworkManager::connectWifi()
 
 bool NetworkManager::post(bool is_in, NFCReader::StudentInfo _info, char *_dt)
 {
+    HTTPClient http;
     DynamicJsonDocument doc(1024);
     char buffer[1024];
 
@@ -48,12 +49,16 @@ bool NetworkManager::post(bool is_in, NFCReader::StudentInfo _info, char *_dt)
     serializeJson(doc, buffer, sizeof(buffer));
     Serial.println(buffer);
 
-    // HTTPS POST
-    int status_code = GASSLLPost(String(buffer));
-    Serial.print("[info] HTTPS Status Code : ");
+    // HTTP POST
+    http.begin(wifi_config.apis);
+    http.addHeader("Content-Type", "application/json");
+    int status_code = http.POST((uint8_t *)buffer, strlen(buffer));
+    Serial.print("[info] HTTP Status Code : ");
     Serial.print(status_code);
+
+    http.end();
     
-    if (status_code != 200)
+    if (status_code != 201)
     {
         displayMan->DrawPOSTError(status_code);
         gpioMan->ringBuzzer(2000);
@@ -64,100 +69,6 @@ bool NetworkManager::post(bool is_in, NFCReader::StudentInfo _info, char *_dt)
     gpioMan->ringBuzzer(100);
 
     return true;
-}
-
-int NetworkManager::GASSLLPost(String json_body)
-{
-  WiFiClientSecure client;
-  const char* host = "script.google.com";
-  int status_code = -1;
-  String redirect_url = "";
-  
-  client.setInsecure();
-  if (!client.connect(host, 443))
-  {
-    return -1;
-  }
-  else{
-    // HTTP POST Request
-    String str1 = String("POST ") + String(wifi_config.apis) + " HTTP/1.1\r\n";
-         str1 += "Host: " + String(host) + "\r\n";
-         str1 += "User-Agent: BuildFailureDetectorESP32\r\n";
-         str1 += "Connection: close\r\n";
-         str1 += "Content-Type: application/json; charset=utf-8\r\n";
-         str1 += "Content-Length: " + String(json_body.length()) + "\r\n\r\n";
-         str1 +=  json_body;
-         str1 += "\r\n";
-
-    client.print(str1);
-    client.flush();
-  }
-
-  // POST Response
-  if(client){
-    while (client.connected()) {
-      String line = client.readStringUntil('\n');
-      Serial.println(line);
-      
-      if (line.startsWith("HTTP/1.1 ")) {
-        status_code = line.substring(9,12).toInt();
-      }
-      else if (line.startsWith("location: ")) {
-        redirect_url = line.substring(10);
-      }
-      else if (line == "\r") {
-        Serial.println("headers received");
-        break;
-      }
-    }
-
-    while(client.available()){
-      client.read();
-    }
-
-    client.stop();
-  }
-
-  Serial.print("STAUS CODE : ");
-  Serial.println(status_code);
-
-  // GET Redirected URL
-  if(status_code == 302) {
-    if (!client.connect(host, 443))
-    {
-      return false;
-    }
-    else {
-      client.println("GET " + redirect_url + " HTTP/1.1");
-      client.println("Host: " + String(host));
-      client.println("Connection: close");
-      client.println();
-
-      Serial.println(redirect_url);
-  
-      // Header
-      while (client.connected()) {
-        String line = client.readStringUntil('\n');
-        Serial.println(line);
-        
-        if (line.startsWith("HTTP/1.1 ")) {
-          status_code = line.substring(9,12).toInt();
-        }
-        else if (line == "\r") {
-          Serial.println("headers received");
-          break;
-        }
-      }
-      while (client.available()) {
-        char c = client.read();
-        Serial.write(c);
-      }
-
-      client.stop();
-    }
-  }
-  
-  return status_code;
 }
 
 void NetworkManager::setupNTP()

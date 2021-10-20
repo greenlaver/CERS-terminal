@@ -42,10 +42,13 @@ bool NFCReader::readCard()
 
     if (!readIDFromCard(student_info.id))
     {
-      return false;
+//      return false;
+        student_info.id[0] = ' ';
+        student_info.id[1] = '\0';
     }
     if (!readNameFromCard(str_sjis))
     {
+      Serial.println("Reading Name failed.");
       return false;
     }
 
