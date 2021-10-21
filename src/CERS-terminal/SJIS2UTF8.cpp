@@ -303,7 +303,8 @@ bool convertSjis2UTF8(uint32_t max_len, char *str_sjis, char *str_utf8)
             *str_utf8++ = 0x9C;
             break;
         default:
-            *str_utf8++ = '?';
+//            *str_utf8++ = '?';
+            *str_utf8++ = str_sjis[i];
             break;
         }
     }
